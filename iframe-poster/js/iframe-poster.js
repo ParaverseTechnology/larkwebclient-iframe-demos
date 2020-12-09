@@ -220,5 +220,21 @@ $(document).ready(function() {
             var mod = $(this).attr('data');
             sendToIframe(10208, mod, "");
         });
+
+        // window key eventdown
+        document.addEventListener("keydown", function(e) {
+            console.log("out keydown", e);
+            sendToIframe(10010, {
+                key: e.code,
+                isRepeat: e.repeat,
+            }, "");
+        });
+        // window key eventup
+        document.addEventListener("keyup", function(e) {
+            console.log("out keyup", e);
+            sendToIframe(10011, {
+                key: e.code,
+            }, "");
+        });
 	})();
 });
