@@ -1,0 +1,15 @@
+.container {
+	padding-top: 50px;
+}
+.message {
+	margin-top: 20px;
+	height: 300px;
+	background-color: lightcyan;
+    overflow: scroll;
+	border: 2px solid darkred;
+	color: #fff;
+}
+.active {
+	background-color: darkgreen;
+	border: 2px solid darkgreen;
+}

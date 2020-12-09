@@ -1,0 +1,25 @@
+syntax = "proto3";
+package pxyproto;
+
+enum CONTROL_MSG_TYPE
+{
+   MSG_HELLO = 0;
+   MSG_PING = 1;
+   MSG_PONG = 2;
+}
+
+message ControlMessage {
+	CONTROL_MSG_TYPE type = 1;
+}
+
+message DataMessage {
+	bytes data = 1;
+}
+
+message Message
+{
+	oneof msg {
+		ControlMessage controlMsg = 1;
+		DataMessage dataMsg = 2;
+	}
+}
