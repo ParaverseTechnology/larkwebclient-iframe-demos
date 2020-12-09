@@ -137,6 +137,7 @@ $(document).ready(function() {
 		}
 
 		var jsoncmdMessageHandle = function(jsonStr) {
+			$("#getText").val(jsonStr);
 			try {
 				var cmd = JSON.parse(jsonStr);
 				switch(cmd.type) {
