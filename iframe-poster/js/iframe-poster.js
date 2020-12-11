@@ -3,9 +3,9 @@ var serverAddr = "192.168.0.50:8181";
 var config = {
 	userLocalIP: true,
 	server: "http://" + serverAddr + "/", // server
-	// webclient: "http://" + serverAddr + "/webclient", // client
-    webclient: "http://192.168.0.122:8080/", // debug client
-    testAppId: "745612252752642048",
+    webclient: "http://" + serverAddr + "/webclient", // client
+    // webclient: "http://192.168.0.122:8080/", // debug client
+    testAppId: "745609250029436928",
 }
 
 $(document).ready(function() {
@@ -41,14 +41,6 @@ $(document).ready(function() {
 		$.get(config.server + "getEnterAppliInfo?appliId=" + appliId, function(res){
 			console.log("enter appli res:", res, joinParam(res.result));
 			if (res && res.code == 1000) {
-				// 设置 datachannel server
-				res.result.dcsIp = '192.168.0.50';
-				res.result.dcsPort = 10006;
-				res.result.disableDcs = false;
-                
-                res.result.debugTask = true;
-                res.result.debugWebServer = serverAddr;
-
                 // res.result.playerMode = 1;
 				// res.result.userType = 1;
 				// res.result.nickname = "Test";
@@ -71,170 +63,113 @@ $(document).ready(function() {
 
     // iframe websocket test
 	(function() {
-        window.addEventListener("message", function(e) {
+        var poster = new lark.iframePoster($("#iframe").get(0), {
+            onMessage: onMessage,
+            listenKeyboard: true,
+        })
+        
+        function onMessage(e) {
             console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
-        }, false);
-    
-		function sendToIframe(type, data, message) {
-			if ($("#iframe").get(0).contentWindow) {
-				var win = $("#iframe").get(0).contentWindow;
-				win.postMessage({
-					prex: "pxymessage", // 约定的消息头部
-					type: type,         // 消息类型
-					data: data,         // 具体数据
-					message: message,   // 附加信息
-				},'*');
-			} else {
-				console.warn('content window not find.');
-			}
-		}
+        }
     
         $(".test-key").on("mousedown", function() {
             var key = $(this).attr('data');
-            sendToIframe(10010, {
-                key,
-                isRepeat: false,
-            }, "");
+            poster.sendKeyDown(key, false);
         });
         $(".test-key").on("mouseup", function() {
             var key = $(this).attr('data');
-            sendToIframe(10011, {
-                key,
-                isRepeat: false,
-            }, "");
+            poster.sendKeyUp(key);
         });
         $("#mouse-wheel-up").on('click', function() {
-            sendToIframe(10003, {
-                x: 500,
-                y: 500,
-                wheel: -100,
-            }, "");
+            poster.sendWheelUp(500, 500);
         });
         $("#mouse-wheel-down").on('click', function() {
-            sendToIframe(10003, {
-                x: 500,
-                y: 500,
-                wheel: -100,
-            }, "");
+            poster.sendWheelDown(500, 500);
         });
         $("#mouse-move").on('click', function() {
-            sendToIframe(10000, {
-                x: 500,
-                y: 500,
-                rx: 10,
-                ry: 10,
-            }, "");
+            poster.sendMouseMove(500, 500, 10, 10);
         });
         $("#mouse-left").on('mousedown', function() {
-            sendToIframe(10001, {
-                button: 'left',
-                x: 500,
-                y: 500,
-            }, "");
+            poster.sendMouseDown('left', 500, 500);
         });
         $("#mouse-left").on('mouseup', function() {
-            sendToIframe(10002, {
-                button: 'left',
-                x: 500,
-                y: 500,
-            }, "");
+            poster.sendMouseUp('left', 500, 500);
         });
         $("#mouse-right").on('mousedown', function() {
-            sendToIframe(10001, {
-                button: 'right',
-                x: 500,
-                y: 500,
-            }, "");
+            poster.sendMouseDown('right', 500, 500);
         });
         $("#mouse-right").on('mouseup', function() {
-            sendToIframe(10002, {
-                button: 'right',
-                x: 500,
-                y: 500,
-            }, "");
+            poster.sendMouseUp('right', 500, 500);
         });
         $("#mouse-mid").on('mousedown', function() {
-            sendToIframe(10001, {
-                button: 'mid',
-                x: 500,
-                y: 500,
-            }, "");
+            poster.sendMouseDown('mid', 500, 500);
         });
         $("#mouse-mid").on('mouseup', function() {
-            sendToIframe(10002, {
-                button: 'mid',
-                x: 500,
-                y: 500,
-            }, "");
+            poster.sendMouseUp('mid', 500, 500);
         });
         $(".test-scale-mode").on("click", function() {
+            // mode 缩放模式值为： fit/cover/contain/fill_stretch
             var mod = $(this).attr('data');
-            sendToIframe(10101, mod, "");
+            poster.setScaleMode(mod);
         });
         $(".test-mouse-mode").on("click", function() {
+            // mode "true"/"false" 鼠标模式 true 为锁定模式，false 为自动判断模式
             var mod = $(this).attr('data');
-            sendToIframe(10100, mod, "");
+            poster.setMouseMode(mod);
         });
         // 控制底部控制栏显示与隐藏
         $(".test-control-bar").on("click", function() {
+            // show "true"/"false" 是否显示控制球
             var mod = $(this).attr('data');
-            sendToIframe(10200, mod, "");
+            poster.setShowControlBall(mod);
         });
         // 控制玩家列表显示与隐藏
         $(".test-playerlist").on("click", function() {
+            // show "true"/"false" 是否显示玩家列表
             var mod = $(this).attr('data');
-            sendToIframe(10201, mod, "");
+            poster.setShowPlayerList(mod);
         });
         // 控制玩家列表分享按钮的显示与隐藏
         $(".test-shareurl").on("click", function() {
+            // show "true"/"false" 是否显示分享连接
             var mod = $(this).attr('data');
-            sendToIframe(10202, mod, "");
+            poster.setShowPlayerListShareUrl(mod);
         });
         // 控制手机端控制球显示与隐藏
         $(".test-mobile-control-ball").on("click", function() {
+            // show "true"/"false" 手机端是否显示控制球
             var mod = $(this).attr('data');
-            sendToIframe(10203, mod, "");
+            poster.setShowMobileControlBall(mod);
         });
         // 控制手机端摇杆显示与隐藏
         $(".test-mobile-joystick").on("click", function() {
+            // show "true"/"false" 手机端是否显示摇杆
             var mod = $(this).attr('data');
-            sendToIframe(10204, mod, "");
+            poster.setShowMobileJoystick(mod);
         });
         // 控制手机端虚拟键盘显示与隐藏
         $(".test-mobile-virtualkeyboard").on("click", function() {
+            // "true"/"false" 是否显示虚拟键盘
             var mod = $(this).attr('data');
-            sendToIframe(10205, mod, "");
+            poster.setShowMobileKeyboard(mod);
         });
         // 控制手机端虚拟鼠标显示与隐藏
         $(".test-mobile-virtualmouse").on("click", function() {
+            // show "true"/"false" 是否显示菜单栏
             var mod = $(this).attr('data');
-            sendToIframe(10206, mod, "");
+            poster.setShowMobileVritualMouse(mod);
         });
         // 控制手机端菜单显示与隐藏
         $(".test-mobile-menu").on("click", function() {
+            // force "true"/"false" 是否强制横屏
             var mod = $(this).attr('data');
-            sendToIframe(10207, mod, "");
+            poster.setShowMobileMenu(mod);
         });
         // 控制手机端是否强制横屏
         $(".test-mobile-forcelandscape").on("click", function() {
+            // "true"/"false" 是否强制横屏
             var mod = $(this).attr('data');
-            sendToIframe(10208, mod, "");
-        });
-
-        // window key eventdown
-        document.addEventListener("keydown", function(e) {
-            console.log("out keydown", e);
-            sendToIframe(10010, {
-                key: e.code,
-                isRepeat: e.repeat,
-            }, "");
-        });
-        // window key eventup
-        document.addEventListener("keyup", function(e) {
-            console.log("out keyup", e);
-            sendToIframe(10011, {
-                key: e.code,
-            }, "");
+            poster.setMobileForcelandscape(mod);
         });
 	})();
 });

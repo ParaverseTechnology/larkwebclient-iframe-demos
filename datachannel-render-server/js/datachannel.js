@@ -3,12 +3,12 @@ var serverAddr = "192.168.0.50:8181";
 var config = {
 	userLocalIP: true,
 	server: "http://" + serverAddr + "/", // server
-	// webclient: "http://" + serverAddr + "/webclient", // client
-    webclient: "http://192.168.0.122:8080/", // debug client
+	webclient: "http://" + serverAddr + "/webclient", // client
+    // webclient: "http://192.168.0.122:8080/", // debug client
     // testAppId: "745612252752642048",
-	testAppId: "745609250029436928",
+	testAppId: "786273485419708416",
 	// test appurl
-	testAppUrl: "http://127.0.0.1:8080/cloudlark/webclient/#/?appServer=192.168.0.223&appPort=10002&taskId=123456&debugTask=true&logLevel=info&",
+	// testAppUrl: "http://127.0.0.1:8080/cloudlark/webclient/#/?appServer=192.168.0.223&appPort=10002&taskId=123456&debugTask=true&logLevel=info&",
 }
 
 
@@ -47,14 +47,6 @@ $(document).ready(function() {
 		$.get(config.server + "getEnterAppliInfo?appliId=" + appliId, function(res){
 			console.log("enter appli res:", res, joinParam(res.result));
 			if (res && res.code == 1000) {
-				// 设置 datachannel server
-				res.result.dcsIp = '192.168.0.50';
-				res.result.dcsPort = 10006;
-				res.result.disableDcs = false;
-                
-                res.result.debugTask = true;
-                res.result.debugWebServer = serverAddr;
-                
 				$("#iframe").attr("src", config.webclient + "?" + joinParam(res.result));
 			}
 		})
@@ -72,8 +64,12 @@ $(document).ready(function() {
 
     // iframe websocket test
 	(function() {
+		var poster = new lark.iframePoster($("#iframe").get(0), {
+            onMessage: onMessage,
+            listenKeyboard: true,
+        })
 		// 监听消息
-		window.addEventListener("message", function(e) {
+		function onMessage(e) {
 			switch(e.data.type) {
 				// open
 				case 20200:
@@ -92,36 +88,22 @@ $(document).ready(function() {
 				// 接收到文本消息
 				case 20203:
 					console.log("接收到文本消息", e.data.data);
-					$("#receive").text(e.data.data);
+					handleJsonCmd(e.data.data);
 					break;
 				default:
 					// console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
 					break;
 			}
-		}, false);
-
-		function sendToIframe(type, data, message) {
-			if ($("#iframe").get(0).contentWindow) {
-				var win = $("#iframe").get(0).contentWindow;
-				win.postMessage({
-					prex: "pxymessage", // 约定的消息头部
-					type: type,         // 消息类型
-					data: data,         // 具体数据
-					message: message,   // 附加信息
-				},'*');
-			} else {
-				console.warn('content window not find.');
-			}
-		}
+		};
 
 		// 发送字符消息。
 		function sendText(jsonStr) {
-			sendToIframe(20300, jsonStr, "");
+			poster.sendTextToRenderSererAppDataChannel(jsonStr);
 		}
 
 		// 发送字节消息
-		function sendBinary(binary) {			
-			sendToIframe(20301, binary, "");
+		function sendBinary(binary) {	
+			poster.sendBinaryToRenderServerAppDataChannel(binary);
 		}
 
 		$("#test-ws").on("click", function() {
@@ -131,5 +113,71 @@ $(document).ready(function() {
 		$("#send-test-binary").on("click", function() {
             sendBinary(new Uint8Array([0x50, 0x58, 0x59, 0xf0]));
 		});
+
+		// test json cmdtype
+		var JsonCmdType  = {
+			CMD_CAMERA_LOADED: 1000,
+			CMD_SWITCH_CAMERA: 1001,
+	
+			CMD_OBJECT_LOADED: 2001,
+			CMD_OBJECT_PICKED: 2002,
+			CMD_TOGGLE_OBJECT: 2003,
+		};
+
+		function handleJsonCmd(jsonStr) {
+			$("#receive").text(jsonStr);
+			try {
+				var cmd = JSON.parse(jsonStr);
+				switch(cmd.type) {
+					case JsonCmdType.CMD_CAMERA_LOADED:
+						// init camera list.
+						// clear old
+						$('#cameralist-iframe').empty();
+						for (var i = 0; i < cmd.data; i++) {
+							$("#cameralist-iframe").append(
+								'<button class="btn btn-default camera"' + 
+									'data-index="' + i + '">Switch To Camera ' + i + 
+								'</button>'
+							);
+						}
+						// switch object.
+						$('#cameralist-iframe .camera').on('click', function(e) {
+							var index = $(this).attr('data-index');
+							console.log('switch to ' + index + ' camera');
+							sendText(JSON.stringify({
+								type: JsonCmdType.CMD_SWITCH_CAMERA,
+								data: parseInt(index),
+							}));
+						});
+						break;
+					case JsonCmdType.CMD_OBJECT_LOADED:
+						// init object list.
+						// clear old
+						$("#objectList-iframe").empty();
+						for (var i = 0; i < cmd.data; i++) {
+							$("#objectList-iframe").append(
+								'<button class="btn btn-default object"' + 
+									'data-index="' + i + '">Toggle Object ' + i + 
+								'</button>'
+							);
+						}
+						// toggle object.
+						$('#objectList-iframe .object').on('click', function(e) {
+							var index = $(this).attr('data-index');
+							console.log('toggle ' + index + ' object');
+							sendText(JSON.stringify({
+								type: JsonCmdType.CMD_TOGGLE_OBJECT,
+								data: parseInt(index),
+							}));
+						});
+						break;
+					default:
+						console.log('got json cmd ' + jsonStr);
+						break;
+				}
+			} catch(e) {
+				console.warn('cmd parse failed.');
+			}
+		}
 	})();
 });

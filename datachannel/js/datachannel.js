@@ -68,6 +68,11 @@ $(document).ready(function() {
 
     // iframe websocket test
 	(function() {
+		var poster = new lark.iframePoster($("#iframe").get(0), {
+            onMessage: onMessage,
+            listenKeyboard: true,
+		})
+		
 		// test json cmdtype
 		var JsonCmdType  = {
 			CMD_CAMERA_LOADED: 1000,
@@ -79,7 +84,7 @@ $(document).ready(function() {
 		};
 
 		// 监听消息
-		window.addEventListener("message", function(e) {
+		function onMessage(e) {
 			switch(e.data.type) {
 				// 数据通道建立完成
 				case 20000:
@@ -110,30 +115,16 @@ $(document).ready(function() {
 					// console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
 					break;
 			}
-		}, false);
-
-		function sendToIframe(type, data, message) {
-			if ($("#iframe").get(0).contentWindow) {
-				var win = $("#iframe").get(0).contentWindow;
-				win.postMessage({
-					prex: "pxymessage", // 约定的消息头部
-					type: type,         // 消息类型
-					data: data,         // 具体数据
-					message: message,   // 附加信息
-				},'*');
-			} else {
-				console.warn('content window not find.');
-			}
 		}
 
-		// 发送字符消息。
+		// 发送字符消息
 		function sendText(jsonStr) {
-			sendToIframe(20102, jsonStr, "");
+			poster.sendTextToDataChannel(jsonStr);
 		}
 
 		// 发送字节消息
-		function sendBinary(binary) {			
-			sendToIframe(20103, binary, "");
+		function sendBinary(binary) {
+			poster.sendBinaryToDataChannel(binary);		
 		}
 
 		var jsoncmdMessageHandle = function(jsonStr) {
