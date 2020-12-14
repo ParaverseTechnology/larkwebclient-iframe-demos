@@ -316,7 +316,7 @@ var lark = (function() {
          * @param {number} x 鼠标绝对位置（相对云端应用）
          * @param {number} y 鼠标绝对位置（相对云端应用）
          * @param {number} rx 鼠标移动相对位置
-         * @param {number} ry 鼠标移动相对文字
+         * @param {number} ry 鼠标移动相对位置
          */
         function sendMouseMove(x, y, rx, ry) {
             sendToIframe(EventTypes.LK_IFRAME_POSTER_OPERATE_MOUSE_MOVE, {
