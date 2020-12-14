@@ -77,7 +77,7 @@ $(document).ready(function() {
         function onMessage(e) {
             console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
             switch(e.data.type) {
-                case 930:
+                case lark.EventTypes.LK_UI_RESIZE:
                     console.log("receive iframe size.", e.data.data);
                     iframeSize = e.data.data;
                     break;

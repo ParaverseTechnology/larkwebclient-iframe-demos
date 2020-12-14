@@ -122,8 +122,12 @@ var lark = (function() {
         LK_APP_MOUSE_MODE                                : 911,
         // 3.1.1.10 新增
         LK_APP_PLAER_LIST                                : 912,
+        // APP 请求输入文字
+        LK_APP_REQUEST_TEXT                              : 913,
         // 用户主动点击关闭按钮
         LK_USER_REQUEST_QUIT                             : 920,
+        // UI resize
+        LK_UI_RESIZE                                     : 930,
 
         //
         // XR 相关事件
