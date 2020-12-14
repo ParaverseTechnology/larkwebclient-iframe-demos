@@ -1,7 +1,6 @@
 var serverAddr = "192.168.0.50:8181";
 
 var config = {
-	userLocalIP: true,
 	server: "http://" + serverAddr + "/", // server
     webclient: "http://" + serverAddr + "/webclient", // client
     // webclient: "http://192.168.0.122:8080/", // debug client
