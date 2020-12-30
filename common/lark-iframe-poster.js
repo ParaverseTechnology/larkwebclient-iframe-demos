@@ -142,7 +142,9 @@ var lark = (function() {
         LK_STARTVRSTREAM_START_DRIVER_RUNTIME_UDPPORT_ERROR : 1003,
         // 启动VR流媒体 udp 编码出错
         LK_STARTVRSTREAM_START_DRIVER_RUNTIME_ENCODER_ERROR : 1004,
-        //
+
+
+      //
         // iframe 外部发送给 web 客户端消息
         //
         // 操作
@@ -155,7 +157,7 @@ var lark = (function() {
         // 功能
         LK_IFRAME_POSTER_FUNC_MOUSE_MODE                  : 10100,
         LK_IFRAME_POSTER_FUNC_SCALE_MODE                  : 10101,
-        // 控制 ui 
+        // 控制 ui
         // 是否显示桌面端控制栏
         LK_IFRAME_POSTER_UI_CONTROLLER_BAR                : 10200,
         // 是否显示玩家列表
@@ -174,6 +176,8 @@ var lark = (function() {
         LK_IFRAME_POSTER_UI_MOBILE_MENU                   : 10207,
         // 是否手机端强制横屏
         LK_IFRAME_POSTER_UI_MOBILE_FORCE_LANDSCAPE        : 10208,
+        //iframe 外部发送给 web 客户端消息结束
+
         //
         // iframe 外部接收 web 客户端消息 from datachannel 
         //
@@ -198,7 +202,7 @@ var lark = (function() {
         LK_DATA_CHANNEL_RENDERSERVER_BINARY_MESSAGE        : 20202,
         LK_DATA_CHANNEL_RENDERSERVER_TEXT_MESSAGE          : 20203,
         //
-        // iframe 外部发送给 web 客户端 to datachannel 
+        // iframe 外部发送给 web 客户端 to datachannel-renderserver
         //
         LK_DATA_CHANNEL_RENDERSERVER_SEND_TEXT            : 20300,
         LK_DATA_CHANNEL_RENDERSERVER_SEND_BINARY          : 20301,
