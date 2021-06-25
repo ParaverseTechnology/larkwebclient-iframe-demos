@@ -170,5 +170,11 @@ $(document).ready(function() {
             var mod = $(this).attr('data');
             poster.setMobileForcelandscape(mod);
         });
+        // 控制手机端是否显示触摸点
+        $(".test-mobile-touchpoint").on("click", function() {
+            var mod = $(this).attr('data');
+            // "true"/"false" 是否显示触摸点
+            poster.setMobileTouchPoint(mod);
+        });
 	})();
 });

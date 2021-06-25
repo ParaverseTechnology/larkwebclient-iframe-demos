@@ -176,6 +176,8 @@ var lark = (function() {
         LK_IFRAME_POSTER_UI_MOBILE_MENU                   : 10207,
         // 是否手机端强制横屏
         LK_IFRAME_POSTER_UI_MOBILE_FORCE_LANDSCAPE        : 10208,
+        // 是否显示触摸点
+        LK_IFRAME_POSTER_UI_MOBILE_TOUCH_POINT            : 10209,
         //iframe 外部发送给 web 客户端消息结束
 
         //
@@ -452,6 +454,14 @@ var lark = (function() {
         }
 
         /**
+         * 移动端是否显示触摸点
+         * @param {string} point "true"/"false" 是否强制横屏
+         */
+        function setMobileTouchPoint(point) {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_MOBILE_TOUCH_POINT, point, "");
+        }
+
+        /**
          * @deprecated
          * 向数据通道服务发送字符串消息。
          * 需要打开数据通道服务后才能正常使用
@@ -509,6 +519,7 @@ var lark = (function() {
         poster.setShowMobileVritualMouse = setShowMobileVritualMouse;
         poster.setShowMobileMenu = setShowMobileMenu;
         poster.setMobileForcelandscape = setMobileForcelandscape;
+        poster.setMobileTouchPoint = setMobileTouchPoint;
         poster.sendTextToDataChannel = sendTextToDataChannel;
         poster.sendBinaryToDataChannel = sendBinaryToDataChannel;
         poster.sendTextToRenderSererAppDataChannel = sendTextToRenderSererAppDataChannel;
