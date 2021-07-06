@@ -11,11 +11,15 @@
 var lark = (function() {
     // event types.
     var EventTypes = {
+        // 网页客户端载入成功（3.1.8.1添加）
+        LK_WEB_CLIENT_LOAD_SUCCESS                       : 1,
         // 进入应用接口调用
         LK_API_ENTERAPPLI_SUCCESS                        : 10,
         LK_API_ENTERAPPLI_FAILED                         : 11,
         // 同步应用中
         LK_TASK_SYNC_APP                                 : 20,
+        // 同步 task 失败（3.1.8.1添加）
+        LK_TASK_SYNC_APP_FAILED                          : 21,
         //
         // 连接应用服务器事件。直连渲染服务器时抛出
         // 消息来源：websocket 连接事件
@@ -114,12 +118,15 @@ var lark = (function() {
         // 消息来源：后台协议 AppProcessNotification
         //
         LK_APP_PROCESS_NOTIFI_APP_QUIT                   : 900,
+        // 无操作超时（3.1.8.1添加）
+        LK_NO_OPERATION_TIMEOUT                          : 901,
         // 云端应用大小变换
         // 3.1.1.8 新增
         LK_APP_RESIZE                                    : 910,
         // 云端应用鼠标模式变化
         // 3.1.1.8 新增
         LK_APP_MOUSE_MODE                                : 911,
+        // 获取到玩家列表
         // 3.1.1.10 新增
         LK_APP_PLAER_LIST                                : 912,
         // APP 请求输入文字
@@ -143,8 +150,16 @@ var lark = (function() {
         // 启动VR流媒体 udp 编码出错
         LK_STARTVRSTREAM_START_DRIVER_RUNTIME_ENCODER_ERROR : 1004,
 
+        //
+        // ui相关事件通知
+        // 
+        // 警告框弹出（3.1.8.1添加）
+        LK_WEBCLIENT_NOTIFY_ALERT                           : 1100,
+        // 确认框弹出（3.1.8.1添加）
+        LK_WEBCLIENT_NOTIFY_CONFIRM                         : 1101,
 
-      //
+
+        //
         // iframe 外部发送给 web 客户端消息
         //
         // 操作
@@ -155,8 +170,15 @@ var lark = (function() {
         LK_IFRAME_POSTER_OPERATE_KEY_DOWN                 : 10010,
         LK_IFRAME_POSTER_OPERATE_KEY_UP                   : 10011,
         // 功能
+        // 设置鼠标模式，锁定模式和非锁定模式
         LK_IFRAME_POSTER_FUNC_MOUSE_MODE                  : 10100,
+        // 设置缩放模式
         LK_IFRAME_POSTER_FUNC_SCALE_MODE                  : 10101,
+        // 重新启动云端应用（3.1.8.1添加）
+        LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP           : 10102,
+        // 微信浏览器加载成功事件 （3.1.8.1添加）
+        LK_IFRAME_POSTER_FUNC_WX_JS_BRIDGE_READY          : 10103,
+
         // 控制 ui
         // 是否显示桌面端控制栏
         LK_IFRAME_POSTER_UI_CONTROLLER_BAR                : 10200,
@@ -178,6 +200,12 @@ var lark = (function() {
         LK_IFRAME_POSTER_UI_MOBILE_FORCE_LANDSCAPE        : 10208,
         // 是否显示触摸点
         LK_IFRAME_POSTER_UI_MOBILE_TOUCH_POINT            : 10209,
+        // 设置 Toast 显示级别（3.1.8.1添加）
+        LK_IFRAME_POSTER_UI_TOAST_LEVEL                   : 10210,
+        // 设置 Alert 是否显示（3.1.8.1添加）
+        LK_IFRAME_POSTER_UI_ALERT                         : 10211,
+        // 设置 Confirm 是否显示（3.1.8.1添加）
+        LK_IFRAME_POSTER_UI_CONFIRM                       : 10212,
         //iframe 外部发送给 web 客户端消息结束
 
         //
@@ -499,6 +527,37 @@ var lark = (function() {
             sendToIframe(EventTypes.LK_DATA_CHANNEL_RENDERSERVER_SEND_BINARY, binary, "");
         }
 
+        /**
+         * 微信 jsbridge ready 时通知客户端
+         */
+        function wxJsBridgeReady() {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_FUNC_WX_JS_BRIDGE_READY);
+        }
+
+        /**
+         * 通知客户端是否显示警告框。当关闭时将不显示默认警告框，警告的内容和code通过 LK_WEBCLIENT_NOTIFY_ALERT 事件向外抛出
+         * @param {*} enable alert 是否启用
+         */
+        function setAlertEnable(enable) {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_ALERT, enable);
+        }
+
+        /**
+         * 通知客户端是否显示确认框。当关闭时将不显示默认确认框，需要用户确认的内容和code通过 LK_WEBCLIENT_NOTIFY_CONFIRM 事件抛出。
+         * @param {*} enable confirm 是否启用
+         */
+        function setConfirmEnable(enable) {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_CONFIRM, enable);
+        }
+
+        /**
+         * 通知客户端设置toast的级别，例如: toastLevel = 0, 显示所有toast， toastLevel > 2 || toastLevel < 0, 关闭所有 toast
+         * @param {*} level toast level
+         */
+        function setToastLevel(level) {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_TOAST_LEVEL);
+        }
+
         var poster = {};
         poster.sendToIframe = sendToIframe;
         poster.sendKeyDown = sendKeyDown;
@@ -524,6 +583,10 @@ var lark = (function() {
         poster.sendBinaryToDataChannel = sendBinaryToDataChannel;
         poster.sendTextToRenderSererAppDataChannel = sendTextToRenderSererAppDataChannel;
         poster.sendBinaryToRenderServerAppDataChannel = sendBinaryToRenderServerAppDataChannel;
+        poster.wxJsBridgeReady = wxJsBridgeReady;
+        poster.setAlertEnable = setAlertEnable;
+        poster.setConfirmEnable = setConfirmEnable;
+        poster.setToastLevel = setToastLevel;
         return poster;
     };
 

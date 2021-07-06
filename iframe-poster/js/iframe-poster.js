@@ -67,8 +67,26 @@ $(document).ready(function() {
             listenKeyboard: true,
         })
         
+        function onBridgeReady() {
+            // tell client bridge ready.
+            poster.wxJsBridgeReady();
+        }
+
         function onMessage(e) {
             console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
+            if (e.data.type == lark.EventTypes.LK_WEB_CLIENT_LOAD_SUCCESS) {
+                // listen wx js bridge ready.
+                if (typeof WeixinJSBridge == "undefined") {
+                    if (document.addEventListener) {
+                        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                    } else if (document.attachEvent) {
+                        document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+                        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                    }
+                } else {
+                    onBridgeReady();
+                }
+            }
         }
     
         $(".test-key").on("mousedown", function() {
@@ -175,6 +193,25 @@ $(document).ready(function() {
             var mod = $(this).attr('data');
             // "true"/"false" 是否显示触摸点
             poster.setMobileTouchPoint(mod);
+        });
+        // 是否启用警告框
+        $(".test-alert").on("click", function() {
+            var mod = $(this).attr('data');
+            poster.setAlertEnable(mod);
+        });
+        // 是否启用确认框
+        $(".test-confirm").on("click", function() {
+            var mod = $(this).attr('data');
+            poster.setConfirmEnable(mod);
+        });
+        // 设置 toast level
+        $(".test-toast-level").on("click", function() {
+            var mod = $(this).attr('data');
+            poster.setToastLevel(mod);
+        });
+        // 通知客户端微信加载完成
+        $(".test-wx-jsready").on("click", function() {
+            poster.wxJsBridgeReady();
         });
 	})();
 });
