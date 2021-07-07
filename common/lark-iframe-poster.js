@@ -104,6 +104,8 @@ var lark = (function() {
         // 消息来源：浏览器或原生组件
         //
         LK_VIDEO_LOADED                                  : 700,
+        // 视频播放自动播放失败，请求手动触发 (3.1.8.2)
+        LK_VIDEO_PLAY_FAILED                             : 701,
 
         //
         // 服务端主动退出
@@ -178,6 +180,9 @@ var lark = (function() {
         LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP           : 10102,
         // 微信浏览器加载成功事件 （3.1.8.1添加）
         LK_IFRAME_POSTER_FUNC_WX_JS_BRIDGE_READY          : 10103,
+        // 请求播放视频 (当视频组件播放失败需要用户触发
+        // 但禁用客户端内部alert 是调用) (3.1.8.2)
+        LK_IFRAME_POSTER_FUNC_REQUEST_PLAY_VIDEO          = 10104,
 
         // 控制 ui
         // 是否显示桌面端控制栏
@@ -535,6 +540,13 @@ var lark = (function() {
         }
 
         /**
+         * 请求播放视频 (当视频组件播放失败需要用户触发但禁用客户端内部alert 时调用) (3.1.8.2)
+         */
+        function requestPlayVideo() {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_FUNC_REQUEST_PLAY_VIDEO);
+        }
+
+        /**
          * 通知客户端是否显示警告框。当关闭时将不显示默认警告框，警告的内容和code通过 LK_WEBCLIENT_NOTIFY_ALERT 事件向外抛出
          * @param {*} enable alert 是否启用
          */
@@ -587,6 +599,7 @@ var lark = (function() {
         poster.setAlertEnable = setAlertEnable;
         poster.setConfirmEnable = setConfirmEnable;
         poster.setToastLevel = setToastLevel;
+        poster.requestPlayVideo = requestPlayVideo;
         return poster;
     };
 

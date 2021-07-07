@@ -213,5 +213,10 @@ $(document).ready(function() {
         $(".test-wx-jsready").on("click", function() {
             poster.wxJsBridgeReady();
         });
+        // 请求播放视频，当视频组件播放失败需要用户触发
+        // 但禁用客户端内部alert 时调用
+        $(".test-request-playvideo").on("", function() {
+            poster.requestPlayVideo();
+        });
 	})();
 });
