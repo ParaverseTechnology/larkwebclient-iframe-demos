@@ -95,9 +95,10 @@ var lark = (function() {
         LK_RTC_EVENT_PEERCONNECTION_CLOSED                : 601,
         // RTC 连接出错
         LK_RTC_EVENT_PEERCONNECTION_ERROR                 : 602,
-        // RTC 状态
-        // 3.1.1.8 新增
+        // RTC 状态上报（rtt 码率等）  3.1.1.8 新增
         LK_RTC_EVENT_PEERCONNECTION_STATE                 : 610,
+        // RTC 重连                   3.1.6.2 新增
+        LK_RTC_EVENT_PEERCONNECTION_RETRY                 : 611,
 
         //
         // 加载视频流
@@ -160,6 +161,13 @@ var lark = (function() {
         // 确认框弹出（3.1.8.1添加）
         LK_WEBCLIENT_NOTIFY_CONFIRM                         : 1101,
 
+        // 用户操作触发事件
+        // 截图 (3.1.8.3)
+        LK_USER_CAPTURE_FRAME                               : 2000,
+
+        // 外部请求截图 (3.1.8.3)
+        LK_REQUEST_CAPTURE_FRAME                            : 3000,
+    
 
         //
         // iframe 外部发送给 web 客户端消息
@@ -182,7 +190,7 @@ var lark = (function() {
         LK_IFRAME_POSTER_FUNC_WX_JS_BRIDGE_READY          : 10103,
         // 请求播放视频 (当视频组件播放失败需要用户触发
         // 但禁用客户端内部alert 是调用) (3.1.8.2)
-        LK_IFRAME_POSTER_FUNC_REQUEST_PLAY_VIDEO          = 10104,
+        LK_IFRAME_POSTER_FUNC_REQUEST_PLAY_VIDEO          : 10104,
 
         // 控制 ui
         // 是否显示桌面端控制栏
@@ -570,6 +578,13 @@ var lark = (function() {
             sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_TOAST_LEVEL);
         }
 
+        /**
+         * 请求截图
+         */
+        function requestCaptureFrame() {
+            sendToIframe(EventTypes.LK_REQUEST_CAPTURE_FRAME);
+        }
+
         var poster = {};
         poster.sendToIframe = sendToIframe;
         poster.sendKeyDown = sendKeyDown;
@@ -600,6 +615,7 @@ var lark = (function() {
         poster.setConfirmEnable = setConfirmEnable;
         poster.setToastLevel = setToastLevel;
         poster.requestPlayVideo = requestPlayVideo;
+        poster.requestCaptureFrame = requestCaptureFrame;
         return poster;
     };
 

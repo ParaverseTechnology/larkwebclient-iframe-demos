@@ -1,10 +1,11 @@
 var serverAddr = "192.168.0.50:8181";
+serverAddr = "192.168.31.15:8181";
 
 var config = {
 	server: "http://" + serverAddr + "/", // server
-    webclient: "http://" + serverAddr + "/webclient", // client
-    // webclient: "http://192.168.0.122:8080/", // debug client
-    testAppId: "745609250029436928",
+    // webclient: "http://" + serverAddr + "/webclient", // client
+    webclient: "http://192.168.31.183:8080/", // debug client
+    testAppId: "831177902081966080",
 }
 
 $(document).ready(function() {
@@ -45,6 +46,9 @@ $(document).ready(function() {
 				// res.result.nickname = "Test";
 				// res.result.roomCode = 0;
                 
+                res.result.debugTask = true;
+                res.result.debugWebServer = serverAddr;
+
 				$("#iframe").attr("src", config.webclient + "?" + joinParam(res.result));
 			}
 		})
@@ -73,8 +77,8 @@ $(document).ready(function() {
         }
 
         function onMessage(e) {
-            console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
             if (e.data.type == lark.EventTypes.LK_WEB_CLIENT_LOAD_SUCCESS) {
+                console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
                 // listen wx js bridge ready.
                 if (typeof WeixinJSBridge == "undefined") {
                     if (document.addEventListener) {
@@ -86,6 +90,14 @@ $(document).ready(function() {
                 } else {
                     onBridgeReady();
                 }
+            } else if (e.data.type == lark.EventTypes.LK_USER_CAPTURE_FRAME) {
+                console.log('收到截图');
+                var w = window.open('about:blank','image from canvas');
+                w.document.write("<img src='" + e.data.data + "' alt='from canvas'/>");
+            } else if (e.data.type == lark.EventTypes.LK_RTC_EVENT_PEERCONNECTION_STATE) {
+                // got connection update state.
+            } else {
+                console.log("receive message." + e.data.prex, e.data.type, e.data.message, e.data.data);
             }
         }
     
@@ -215,8 +227,13 @@ $(document).ready(function() {
         });
         // 请求播放视频，当视频组件播放失败需要用户触发
         // 但禁用客户端内部alert 时调用
-        $(".test-request-playvideo").on("", function() {
+        $(".test-request-playvideo").on("click", function() {
             poster.requestPlayVideo();
         });
+        // 请求截一张图
+        // 截图成功后将通过 LK_USER_CAPTURE_FRAME 返回图片
+        $(".test-capture-frame").on("click", function() {
+            poster.requestCaptureFrame();
+        })
 	})();
 });
