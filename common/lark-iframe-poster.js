@@ -107,6 +107,8 @@ var lark = (function() {
         LK_VIDEO_LOADED                                  : 700,
         // 视频播放自动播放失败，请求手动触发 (3.1.8.2)
         LK_VIDEO_PLAY_FAILED                             : 701,
+        // 获取到云端视频流但未开始播放 (3.1.8.3)
+        LK_GOT_REMOTE_STREAM                             : 710,
 
         //
         // 服务端主动退出
