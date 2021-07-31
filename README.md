@@ -1,3 +1,7 @@
+# 关于
+
+[云雀XR](https://www.pingxingyun.com/ProdAndServ?activeTab=tab1) Web 客户端支持嵌入 iframe 中并通过 iframe poseter 与外层网页进行通信。本项目 Demo 演示通过 iframe poster 实现的不同功能。
+
 1.DataChannelDemo 演示通过嵌入 iframe 的 lark webclient 与后端打开 datachannel 并进行通信的并演示基础指令的双向控制。
 
 2.DataChannelDemo Extra Task 演示通过 js 直接打开与 datachannel server 的通道。并演示基础指令的双向传输。
