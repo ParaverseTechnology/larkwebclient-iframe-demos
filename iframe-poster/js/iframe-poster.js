@@ -94,6 +94,10 @@ $(document).ready(function() {
                 console.log('收到截图');
                 var w = window.open('about:blank','image from canvas');
                 w.document.write("<img src='" + e.data.data + "' alt='from canvas'/>");
+            } else if (e.data.type == lark.EventTypes.LK_USER_CAPTURE_FRAME_WITH_EXTRA_DATA) {
+                console.log("收到截图并附带数据：", e.data.data.data);
+                var w = window.open('about:blank','image from canvas');
+                w.document.write("<img src='" + e.data.data.base64 + "' alt='from canvas'/>");
             } else if (e.data.type == lark.EventTypes.LK_RTC_EVENT_PEERCONNECTION_STATE) {
                 // got connection update state.
             } else {
@@ -234,6 +238,11 @@ $(document).ready(function() {
         // 截图成功后将通过 LK_USER_CAPTURE_FRAME 返回图片
         $(".test-capture-frame").on("click", function() {
             poster.requestCaptureFrame();
+        })
+        // 请求截一张图并附带数据
+        // 截图成功后将通过 LK_REQUEST_CAPTURE_FRAME_WITH_EXTRA_DATA 返回图片
+        $(".test-capture-frame-with-data").on("click", function() {
+            poster.requestCaptureFrameWithExtraData(Date.now());
         })
 	})();
 });

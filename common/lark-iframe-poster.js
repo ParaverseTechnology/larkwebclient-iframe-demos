@@ -125,6 +125,8 @@ var lark = (function() {
         LK_APP_PROCESS_NOTIFI_APP_QUIT                   : 900,
         // 无操作超时（3.1.8.1添加）
         LK_NO_OPERATION_TIMEOUT                          : 901,
+        // 载入作超时（3.1.8.8添加）
+        LK_LOADING_TIMEOUT                               : 902,
         // 云端应用大小变换
         // 3.1.1.8 新增
         LK_APP_RESIZE                                    : 910,
@@ -166,9 +168,13 @@ var lark = (function() {
         // 用户操作触发事件
         // 截图 (3.1.8.3)
         LK_USER_CAPTURE_FRAME                               : 2000,
+        // 用户截图并附带数据 (3.1.8.8)
+        LK_USER_CAPTURE_FRAME_WITH_EXTRA_DATA               : 2001,
 
         // 外部请求截图 (3.1.8.3)
         LK_REQUEST_CAPTURE_FRAME                            : 3000,
+        // 用户截图并附带数据 (3.1.8.8)
+        LK_REQUEST_CAPTURE_FRAME_WITH_EXTRA_DATA            : 3001,
     
 
         //
@@ -587,6 +593,13 @@ var lark = (function() {
             sendToIframe(EventTypes.LK_REQUEST_CAPTURE_FRAME);
         }
 
+        /**
+         * 请求截图并附带 data
+         */
+        function requestCaptureFrameWithExtraData(data) {
+            sendToIframe(EventTypes.LK_REQUEST_CAPTURE_FRAME_WITH_EXTRA_DATA, data);
+        }
+
         var poster = {};
         poster.sendToIframe = sendToIframe;
         poster.sendKeyDown = sendKeyDown;
@@ -618,6 +631,7 @@ var lark = (function() {
         poster.setToastLevel = setToastLevel;
         poster.requestPlayVideo = requestPlayVideo;
         poster.requestCaptureFrame = requestCaptureFrame;
+        poster.requestCaptureFrameWithExtraData = requestCaptureFrameWithExtraData;
         return poster;
     };
 

@@ -13,6 +13,7 @@
 #### 3.1.8.1
 
 ##### 向外抛出
+
 * 添加事件类型 LK_WEB_CLIENT_LOAD_SUCCESS = 1， 当页面加载成功是时抛出
 * 添加事件类型 LK_TASK_SYNC_APP_FAILED = 21， 当同步task请求失败时抛出
 * 添加事件类型 LK_NO_OPERATION_TIMEOUT = 901, 当用户超出设定时限没有操作过时抛出，应关闭当前页面
@@ -28,3 +29,8 @@
 * 添加事件类型 LK_IFRAME_POSTER_UI_CONFIRM = 10212， 通知客户端是否显示确认框。当关闭时将不显示默认确认框，需要用户确认的内容和code通过 LK_WEBCLIENT_NOTIFY_CONFIRM 事件抛出。
 
 比如关闭确认框的情况下，收到了 code 为 LK_APP_PROCESS_NOTIFI_APP_QUIT 的消息，表示云端应用退出了，根据实际的业务需要来提示用户，如果需要重新启动云端应用，再通过发送 LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP 事件来通知客户端启动。
+
+#### 3.1.8.8
+
+* 添加 LK_REQUEST_CAPTURE_FRAME_WITH_EXTRA_DATA = 3001, 请求截图并可以附带一个参数。
+* 添加 LK_USER_CAPTURE_FRAME_WITH_EXTRA_DATA = 2001, 返回带参数的请求。
