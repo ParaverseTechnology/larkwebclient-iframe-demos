@@ -1,36 +1,42 @@
-# 关于
+# About
 
-[云雀XR](https://www.pingxingyun.com/ProdAndServ?activeTab=tab1) Web 客户端支持嵌入 iframe 中并通过 iframe poseter 与外层网页进行通信。本项目 Demo 演示通过 iframe poster 实现的不同功能。
+---
 
-1.DataChannelDemo 演示通过嵌入 iframe 的 lark webclient 与后端打开 datachannel 并进行通信的并演示基础指令的双向控制。
+[English](./README.md) [中文](./README.zh_CN.md)
 
-2.DataChannelDemo Extra Task 演示通过 js 直接打开与 datachannel server 的通道。并演示基础指令的双向传输。
+---
 
-3.PostMessage Demo 演示嵌入 iframe 内的 lark webclient 与外部进行通信的 postmessage 的基本用法和事件。
+[LarkXR](https://www.paraverse.cc/) WebClient support send iframe poster event for developer trans data between WebClient in iframe and outside webpage. Demo shows how to use webclient iframe poster events and accetpt data.
 
-4.DataChannel RenderServer Demo 演示通过嵌入 iframe 的 lark webclient 与后端打开 datachannel 并进行通信的并演示基础指令的双向控制。
+1.DataChannelDemo shows how to use iframe to open datachannel and send/recive data with cloud app.
+
+2.DataChannelDemo Extra Task show how to connect to a extra websocket datachannel and send/receive data.
+
+3.PostMessage Demo show LarkSR Webclient inside iframe event and receive data with outside webpage.
+
+4.DataChannel RenderServer Demo show how to open renderserver default datachannel and send/recive data with cloud app.
 
 #### 3.1.8.1
 
-##### 向外抛出
+##### Event
 
-* 添加事件类型 LK_WEB_CLIENT_LOAD_SUCCESS = 1， 当页面加载成功是时抛出
-* 添加事件类型 LK_TASK_SYNC_APP_FAILED = 21， 当同步task请求失败时抛出
-* 添加事件类型 LK_NO_OPERATION_TIMEOUT = 901, 当用户超出设定时限没有操作过时抛出，应关闭当前页面
-* 添加事件类型 LK_WEBCLIENT_NOTIFY_ALERT = 1100， 当出现警告框时抛出，当设定不显示警告框时，可根据其中内容判断并提示用户。如果不是已知的事件比如浏览器或后台抛出的错误，错误码将为 -1， 已知的事件将包含错误码。
-* 添加事件类型 LK_WEBCLIENT_NOTIFY_CONFIRM = 1101， 当出现需要用户选择的框时抛出，当设定不显示选择框时，可根据其中内容判断并提示用户。如果不是已知的事件比如浏览器或后台抛出的错误，错误码将为 -1， 已知的事件将包含错误码。
-* 添加事件类型 LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP = 10102， 当收到云端应用关闭事件可通过该事件通知客户端重新走启动应用的流程。但不保证云端应用能启动成功。
+* Add event type LK_WEB_CLIENT_LOAD_SUCCESS = 1, throw event when webclient load success.
+* Add event type LK_TASK_SYNC_APP_FAILED = 21, throw event when sync task failed.
+* Add event type LK_NO_OPERATION_TIMEOUT = 901, throw event when user not operate after timout limit.
+* Add event type LK_WEBCLIENT_NOTIFY_ALERT = 1100, throw event when alert box in webclient show, use for disable default alert box and make a new ui.
+* Add event type LK_WEBCLIENT_NOTIFY_CONFIRM = 1101, throw event when confirm box show. use for diable default confirm box and make a new ui.
+* Add event type LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP = 10102, throw event when cloudapp closed and request restart or quit.
 
-#### 通知客户端的事件
+#### Message to WebClient
 
-* 添加事件类型 LK_IFRAME_POSTER_FUNC_WX_JS_BRIDGE_READY = 10103， 通知客户端在微信中加载完成。由于iframe内部捕获不到微信的事件，兼容ios微信浏览器时应及时发送该事件。
-* 添加事件类型 LK_IFRAME_POSTER_UI_TOAST_LEVEL = 10210，通知客户端设置toast的级别，例如: toastLevel = 0, 显示所有toast， toastLevel > 2 || toastLevel < 0, 关闭所有 toast
-* 添加事件类型 LK_IFRAME_POSTER_UI_ALERT = 10211， 通知客户端是否显示警告框。当关闭时将不显示默认警告框，警告的内容和code通过 LK_WEBCLIENT_NOTIFY_ALERT 事件向外抛出
-* 添加事件类型 LK_IFRAME_POSTER_UI_CONFIRM = 10212， 通知客户端是否显示确认框。当关闭时将不显示默认确认框，需要用户确认的内容和code通过 LK_WEBCLIENT_NOTIFY_CONFIRM 事件抛出。
+* Add message type LK_IFRAME_POSTER_FUNC_WX_JS_BRIDGE_READY = 10103, notice LarkSR loaded success in wechat. WebClient cant get wechat loaded event inside iframe.
+* Add message type LK_IFRAME_POSTER_UI_TOAST_LEVEL = 10210, set WebClient toast level. toastLevel = 0 show all, toastLevel > 2 || toastLevel < 0  close all toast
+* Add message type LK_IFRAME_POSTER_UI_ALERT = 10211, set WebClient show defalut alert box. When closed use LK_WEBCLIENT_NOTIFY_ALERT event get alert message.
+* Add message type LK_IFRAME_POSTER_UI_CONFIRM = 10212, set WebClient show defalut confirm box. When close use LK_WEBCLIENT_NOTIFY_CONFIRM  event get confirm message.
 
-比如关闭确认框的情况下，收到了 code 为 LK_APP_PROCESS_NOTIFI_APP_QUIT 的消息，表示云端应用退出了，根据实际的业务需要来提示用户，如果需要重新启动云端应用，再通过发送 LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP 事件来通知客户端启动。
+if close defalut alert box, event code LK_APP_PROCESS_NOTIFI_APP_QUIT cloud app close, if want restart cloudapp, send  LK_IFRAME_POSTER_FUNC_RESTART_CLOUD_APP to WebClient.
 
 #### 3.1.8.8
 
-* 添加 LK_REQUEST_CAPTURE_FRAME_WITH_EXTRA_DATA = 3001, 请求截图并可以附带一个参数。
-* 添加 LK_USER_CAPTURE_FRAME_WITH_EXTRA_DATA = 2001, 返回带参数的请求。
+* Add message type LK_REQUEST_CAPTURE_FRAME_WITH_EXTRA_DATA = 3001, request capture a frame with data.
+* Add event type LK_USER_CAPTURE_FRAME_WITH_EXTRA_DATA = 2001, return capture base64 and request data.
