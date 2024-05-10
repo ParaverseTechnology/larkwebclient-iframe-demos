@@ -155,6 +155,18 @@ $(document).ready(function() {
             // show "true"/"false" 是否显示控制球
             var mod = $(this).attr('data');
             poster.setShowControlBall(mod);
+        });        
+        // rtt图标显示与隐藏（3.2.23.2添加）
+        $(".test-rtt").on("click", function() {
+            // show "true"/"false" 是否显示rtt图标
+            var mod = $(this).attr('data');
+            poster.setShowRtt(mod);
+        });
+        // 桌面端右上角【退出应用】图标显示与隐藏（3.2.23.2添加）
+        $(".test-pc-appli-quit").on("click", function() {
+            // show "true"/"false" 是否显示【退出应用】图标
+            var mod = $(this).attr('data');
+            poster.setShowPcAppliQuit(mod);
         });
         // 控制玩家列表显示与隐藏
         $(".test-playerlist").on("click", function() {

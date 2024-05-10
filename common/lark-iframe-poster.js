@@ -227,6 +227,10 @@ var lark = (function() {
         LK_IFRAME_POSTER_UI_ALERT                         : 10211,
         // 设置 Confirm 是否显示（3.1.8.1添加）
         LK_IFRAME_POSTER_UI_CONFIRM                       : 10212,
+        // 是否显示rtt图标(3.2.23.2添加)
+        LK_IFRAME_POSTER_UI_RTT                           : 10213,
+        // 是否显示桌面端右上角【退出应用】图标(3.2.23.2添加)
+        LK_IFRAME_POSTER_UI_PC_APPLI_QUIT                 : 10214,
         //iframe 外部发送给 web 客户端消息结束
 
         //
@@ -437,6 +441,22 @@ var lark = (function() {
         function setShowControlBall(show) {
             sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_CONTROLLER_BAR, show, "");
         }
+        
+        /**
+         * rtt图标显示与隐藏(3.2.23.2及以上版本)
+         * @param {string} show "true"/"false" 是否显示rtt图标
+         */
+        function setShowRtt(show) {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_RTT, show, "");
+        }
+
+        /**
+         * 桌面端右上角【退出应用】图标显示与隐藏(3.2.23.2及以上版本)
+         * @param {string} show "true"/"false" 是否显示桌面端右上角【退出应用】图标
+         */
+        function setShowPcAppliQuit(show) {
+            sendToIframe(EventTypes.LK_IFRAME_POSTER_UI_PC_APPLI_QUIT, show, "");
+        }
 
         /**
          * 互动模式时是否显示玩家列表
@@ -612,6 +632,8 @@ var lark = (function() {
         poster.setScaleMode = setScaleMode;
         poster.setMouseMode = setMouseMode;
         poster.setShowControlBall = setShowControlBall;
+        poster.setShowRtt = setShowRtt; // (3.2.23.2及以上版本)
+        poster.setShowPcAppliQuit = setShowPcAppliQuit; // (3.2.23.2及以上版本)
         poster.setShowPlayerList = setShowPlayerList;
         poster.setShowPlayerListShareUrl = setShowPlayerListShareUrl;
         poster.setShowMobileControlBall = setShowMobileControlBall;
